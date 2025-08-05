@@ -14,10 +14,18 @@ import { Send, Moon, Sun, Settings } from "lucide-react"
 import { subjectsData, curriculumData, SubjectKey, GradeKey } from "@/app/lib/data";
 import { explanations } from "@/app/lib/explanations";
 
+type YoutubeSuggestion = {
+  title: string;
+  url: string;
+  thumbnail: string;
+  summary: string;
+};
+
 type Message = {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  youtube_suggestion?: YoutubeSuggestion | null;
 };
 
 export default function ChatPage() {
@@ -114,7 +122,13 @@ export default function ChatPage() {
             });
             if (!response.ok) throw new Error(`API isteği başarısız oldu: ${response.status}`);
             const data = await response.json();
-            const botMessage: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: data.reply };
+            
+            const botMessage: Message = { 
+                id: (Date.now() + 1).toString(), 
+                role: 'assistant', 
+                content: data.reply,
+                youtube_suggestion: data.youtube_suggestion
+            };
             setMessages(prev => [...prev, botMessage]);
             setPoints(data.points);
             if (data.new_badge_won) {
@@ -167,6 +181,24 @@ export default function ChatPage() {
                                    <div className={`inline-block p-4 rounded-2xl shadow-md ${message.role === "user" ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-br-lg" : "bg-white dark:bg-gray-800 rounded-bl-lg"}`}>
                                        <p className="whitespace-pre-wrap leading-relaxed text-sm">{message.content}</p>
                                    </div>
+                                   {message.role === 'assistant' && message.youtube_suggestion && (
+                                       <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800/80 rounded-xl shadow-inner border dark:border-gray-700/60">
+                                            <p className="text-xs font-semibold mb-2 ml-1 text-gray-600 dark:text-gray-400">Konuyla İlgili Video Önerisi:</p>
+                                            <a href={message.youtube_suggestion.url} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden group">
+                                                <Image 
+                                                    src={message.youtube_suggestion.thumbnail} 
+                                                    alt={message.youtube_suggestion.title}
+                                                    width={1280}
+                                                    height={720}
+                                                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                                                />
+                                            </a>
+                                            <div className="p-2">
+                                                <a href={message.youtube_suggestion.url} target="_blank" rel="noopener noreferrer" className="text-sm font-bold hover:underline">{message.youtube_suggestion.title}</a>
+                                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{message.youtube_suggestion.summary}</p>
+                                            </div>
+                                       </div>
+                                   )}
                                </div>
                            </div>
                         ))}
@@ -185,7 +217,8 @@ export default function ChatPage() {
                 <form onSubmit={handleSubmit}>
                     <div className="flex gap-3">
                        <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder={`${userName}, merak ettiğin konuyu yaz...`} className="rounded-full flex-1" disabled={isLoading} />
-                       <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="rounded-full">{isLoading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Send className="w-5 h-5" />}</Button>
+                       <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="rounded-full">{isLoading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Send className="w-5 h-5" />}
+                       </Button>
                     </div>
                 </form>
             </Card>
