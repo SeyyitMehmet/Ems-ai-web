@@ -1,0 +1,13 @@
+# .vercelignore
+
+# Vercel'in bu klasörleri build işlemine dahil etmesini engelle
+node_modules/
+.next/
+
+# Python sanal ortam klasörlerini engelle (En Önemli Kısım)
+.venv/
+env/
+
+# Diğer geliştirme dosyaları
+*.md
+.vscode/
