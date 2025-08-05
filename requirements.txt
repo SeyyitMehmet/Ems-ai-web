@@ -6,3 +6,4 @@ python-dotenv
 redis
 langchain
 langchain-community
+langchain-core
