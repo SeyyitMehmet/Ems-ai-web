@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // SİZİN MEVCUT AYARLARINIZ
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -9,6 +10,16 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-}
 
-export default nextConfig
+  // EKLENMESİ GEREKEN YÖNLENDİRME KURALI
+  async rewrites() {
+    return [
+      {
+        source: '/api/python-chatbot/:path*',
+        destination: 'http://localhost:8000/api/python-chatbot/:path*',
+      },
+    ];
+  },
+};
+
+export default nextConfig;
