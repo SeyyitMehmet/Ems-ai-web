@@ -1,9 +1,10 @@
+# requirements.txt - YENİ VE OPTİMİZE EDİLMİŞ HALİ
+
 fastapi
 uvicorn
 pydantic
 google-generativeai
 python-dotenv
 redis
-langchain
-langchain-community
-langchain-core
+langchain-core  # Temel LangChain fonksiyonları için gerekli
+langchain-redis # SADECE Redis entegrasyonu için özel, hafif paket
