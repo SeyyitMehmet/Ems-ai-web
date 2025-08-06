@@ -20,7 +20,7 @@ if not all([GOOGLE_API_KEY, REDIS_URL, YOUTUBE_API_KEY]):
     raise ValueError("Lütfen ortam değişkenlerinde GOOGLE_API_KEY, REDIS_URL ve YOUTUBE_API_KEY'yi tanımlayın.")
 
 genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash-latest")
+model = genai.GenerativeModel("gemini-2.5-flash")
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 youtube_service = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 
