@@ -153,8 +153,10 @@ export default function ChatPage() {
 
     return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50 dark:from-gray-950 dark:via-purple-950 dark:to-violet-950 transition-all duration-500">
+        
         {showConfetti && <Confetti recycle={false} onConfettiComplete={() => setShowConfetti(false)} />}
-        <header className="border-b bg-white/80 backdrop-blur-xl dark:bg-gray-900/80 z-10 shadow-lg">
+        
+        <header className="border-b bg-white/80 backdrop-blur-xl dark:bg-gray-900/80 z-20 shadow-lg">
             <div className="container mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-bold">{grade}. Sınıf - {subjectInfo.name}</h1>
@@ -165,63 +167,91 @@ export default function ChatPage() {
                 </div>
             </div>
         </header>
-        <main className="flex-1 container mx-auto px-4 w-full max-w-5xl flex flex-col gap-4 py-4 overflow-hidden">
-            <Card className="flex-1 shadow-2xl border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl overflow-hidden">
-                <ScrollArea className="h-full p-6" ref={scrollAreaRef}>
-                    <div className="space-y-8">
-                        <div className="p-4 border rounded-2xl shadow-lg bg-gray-50 dark:bg-gray-800/50 flex justify-center items-center max-w-sm mx-auto">
-                           <Image src={gradeInfo?.image || ""} alt={`${grade}. Sınıf ${subjectInfo.name} Ders Haritası`} width={800} height={400} className="rounded-lg object-contain" />
-                        </div>
-                        {messages.map((message) => (
-                           <div key={message.id} className={`flex gap-4 ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-                               <Avatar className={`w-10 h-10 shadow-lg ${message.role === "user" ? "bg-gradient-to-r from-green-500 to-emerald-600" : "bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500"}`}>
-                                   <AvatarFallback className="text-white text-xs">{message.role === "user" ? userName?.substring(0, 2) : "AI"}</AvatarFallback>
-                               </Avatar>
-                               <div className={`flex-1 max-w-[75%]`}>
-                                   <div className={`inline-block p-4 rounded-2xl shadow-md ${message.role === "user" ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-br-lg" : "bg-white dark:bg-gray-800 rounded-bl-lg"}`}>
-                                       <p className="whitespace-pre-wrap leading-relaxed text-sm">{message.content}</p>
-                                   </div>
-                                   {message.role === 'assistant' && message.youtube_suggestion && (
-                                       <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800/80 rounded-xl shadow-inner border dark:border-gray-700/60">
-                                            <p className="text-xs font-semibold mb-2 ml-1 text-gray-600 dark:text-gray-400">Konuyla İlgili Video Önerisi:</p>
-                                            <a href={message.youtube_suggestion.url} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden group">
-                                                <Image 
-                                                    src={message.youtube_suggestion.thumbnail} 
-                                                    alt={message.youtube_suggestion.title}
-                                                    width={1280}
-                                                    height={720}
-                                                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
-                                                />
-                                            </a>
-                                            <div className="p-2">
-                                                <a href={message.youtube_suggestion.url} target="_blank" rel="noopener noreferrer" className="text-sm font-bold hover:underline">{message.youtube_suggestion.title}</a>
-                                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{message.youtube_suggestion.summary}</p>
-                                            </div>
+
+        {/* GÜNCELLEME: Sayfa düzeni 3 sütunlu Flexbox yapısına geçirildi */}
+        <main className="flex-1 flex flex-row items-stretch overflow-hidden">
+            
+            {/* Sol Sütun (Resim) */}
+            <div className="flex-1 relative hidden lg:block">
+                <Image
+                    src="/resimler/1.1.png"
+                    alt="Dekoratif Astronot"
+                    layout="fill"
+                    objectFit="cover" // Resmi kaplaması için 'cover' yapıldı
+                    className="opacity-40 dark:opacity-30"
+                />
+            </div>
+            
+            {/* Orta Sütun (Sohbet Alanı) */}
+            <div className="w-full max-w-5xl mx-auto flex flex-col gap-4 py-4 h-full">
+                <Card className="flex-1 shadow-2xl border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl overflow-hidden">
+                    <ScrollArea className="h-full p-6" ref={scrollAreaRef}>
+                        <div className="space-y-8">
+                            <div className="p-4 border rounded-2xl shadow-lg bg-gray-50 dark:bg-gray-800/50 flex justify-center items-center max-w-sm mx-auto">
+                               <Image src={gradeInfo?.image || ""} alt={`${grade}. Sınıf ${subjectInfo.name} Ders Haritası`} width={800} height={400} className="rounded-lg object-contain" />
+                            </div>
+                            {messages.map((message) => (
+                               <div key={message.id} className={`flex gap-4 ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                                   <Avatar className={`w-10 h-10 shadow-lg ${message.role === "user" ? "bg-gradient-to-r from-green-500 to-emerald-600" : "bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500"}`}>
+                                       <AvatarFallback className="text-white text-xs">{message.role === "user" ? userName?.substring(0, 2) : "AI"}</AvatarFallback>
+                                   </Avatar>
+                                   <div className={`flex-1 max-w-[75%]`}>
+                                       <div className={`inline-block p-4 rounded-2xl shadow-md ${message.role === "user" ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-br-lg" : "bg-white dark:bg-gray-800 rounded-bl-lg"}`}>
+                                           <p className="whitespace-pre-wrap leading-relaxed text-sm">{message.content}</p>
                                        </div>
-                                   )}
+                                       {message.role === 'assistant' && message.youtube_suggestion && (
+                                           <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800/80 rounded-xl shadow-inner border dark:border-gray-700/60">
+                                                <p className="text-xs font-semibold mb-2 ml-1 text-gray-600 dark:text-gray-400">Konuyla İlgili Video Önerisi:</p>
+                                                <a href={message.youtube_suggestion.url} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden group">
+                                                    <Image 
+                                                        src={message.youtube_suggestion.thumbnail} 
+                                                        alt={message.youtube_suggestion.title}
+                                                        width={1280}
+                                                        height={720}
+                                                        className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    />
+                                                </a>
+                                                <div className="p-2">
+                                                    <a href={message.youtube_suggestion.url} target="_blank" rel="noopener noreferrer" className="text-sm font-bold hover:underline">{message.youtube_suggestion.title}</a>
+                                                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{message.youtube_suggestion.summary}</p>
+                                                </div>
+                                           </div>
+                                       )}
+                                   </div>
                                </div>
-                           </div>
-                        ))}
-                        {isLoading && (
-                           <div className="flex gap-4">
-                               <Avatar className="w-10 h-10 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 shadow-lg"><AvatarFallback className="text-white text-xs">AI</AvatarFallback></Avatar>
-                               <div className="inline-block p-4 rounded-2xl rounded-bl-lg bg-white dark:bg-gray-800 shadow-md">
-                                   <div className="flex items-center gap-2"><span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" /><span className="w-2 h-2 bg-pink-500 rounded-full animate-bounce delay-150" /><span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-300" /></div>
+                            ))}
+                            {isLoading && (
+                               <div className="flex gap-4">
+                                   <Avatar className="w-10 h-10 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 shadow-lg"><AvatarFallback className="text-white text-xs">AI</AvatarFallback></Avatar>
+                                   <div className="inline-block p-4 rounded-2xl rounded-bl-lg bg-white dark:bg-gray-800 shadow-md">
+                                       <div className="flex items-center gap-2"><span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" /><span className="w-2 h-2 bg-pink-500 rounded-full animate-bounce delay-150" /><span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-300" /></div>
+                                   </div>
                                </div>
-                           </div>
-                        )}
-                    </div>
-                </ScrollArea>
-            </Card>
-            <Card className="p-4 shadow-2xl border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl">
-                <form onSubmit={handleSubmit}>
-                    <div className="flex gap-3">
-                       <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder={`${userName}, merak ettiğin konuyu yaz...`} className="rounded-full flex-1" disabled={isLoading} />
-                       <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="rounded-full">{isLoading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Send className="w-5 h-5" />}
-                       </Button>
-                    </div>
-                </form>
-            </Card>
+                            )}
+                        </div>
+                    </ScrollArea>
+                </Card>
+                <Card className="p-4 shadow-2xl border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl">
+                    <form onSubmit={handleSubmit}>
+                        <div className="flex gap-3">
+                           <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder={`${userName}, merak ettiğin konuyu yaz...`} className="rounded-full flex-1" disabled={isLoading} />
+                           <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="rounded-full">{isLoading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Send className="w-5 h-5" />}
+                           </Button>
+                        </div>
+                    </form>
+                </Card>
+            </div>
+
+            {/* Sağ Sütun (Resim) */}
+            <div className="flex-1 relative hidden lg:block">
+                 <Image
+                    src="/resimler/1.2.png"
+                    alt="Dekoratif Şekiller"
+                    layout="fill"
+                    objectFit="cover" // Resmi kaplaması için 'cover' yapıldı
+                    className="opacity-40 dark:opacity-30"
+                />
+            </div>
         </main>
     </div>
   )
